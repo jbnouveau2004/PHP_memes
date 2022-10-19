@@ -1,0 +1,5 @@
+changer "localhost" par l'url du site:
+index.php ligne 3
+image.php ligne 3
+
+activer la librairie GD au serveur si cela n'est pas déjà fait

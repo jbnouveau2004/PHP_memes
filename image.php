@@ -1,12 +1,49 @@
-<?php
+<?php	
+require_once 'captcha.php';
+$chemin = "localhost/meme/img/";
+
+// choix d'afficher l'image ou générer le lien
+function resultat($a, $chemin, $liste_questions, $im){
+	if($_POST['choix']!="true"){
+		ob_start();
+		imagepng($im);
+		$outputBuffer = ob_get_clean();
+		$base64 = base64_encode($outputBuffer);
+		echo '<img src="data:image/png;base64,'.$base64.'" />';
+		imagedestroy($im);
+		}else{
+			session_start();
+			$id_question_posee = $_SESSION['captcha']['id_question_posee'];
+			if(in_array($_POST['captcha_reponse' . $a], $liste_questions[$id_question_posee]['reponses'])){
+		$nomfichier = "image" . genererChaineAleatoire() . ".png";
+		$file = "./img/" . $nomfichier;
+		imagepng($im, $file);  
+		imagedestroy($im);
+		echo $chemin . $nomfichier;
+			}else{echo "Vous avez répondu '" . $_POST['captcha_reponse'. $a] . "' à la question captcha, ce n'est pas une bonne réponse. Traitement annulé";}
+			
+			relance_captcha($liste_questions);
+		}
+}
+
+// relancer les captchas suivants
+function relance_captcha($liste_questions){
+	$id_question_posee = array_rand($liste_questions);
+	$_SESSION['captcha']['id_question_posee'] = $id_question_posee;
+	echo "<div id='question'>" . $liste_questions[$id_question_posee]['question'] . '</div>';
+
+}
+
+// conversion #000000 en RGB
 function hex2rgb($hex) {
-		$r = hexdec(substr($hex,0,2));
-		$g = hexdec(substr($hex,2,2));
-		$b = hexdec(substr($hex,4,2));
+		$r = hexdec(substr($hex,1,2));
+		$g = hexdec(substr($hex,3,2));
+		$b = hexdec(substr($hex,5,2));
 	$rgb = array($r, $g, $b);
 	return $rgb;
 }
 
+// génération de 10 caractères aléatoires
 function genererChaineAleatoire($longueur = 10)
 {
  $caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -19,36 +56,55 @@ function genererChaineAleatoire($longueur = 10)
  return $chaineAleatoire;
 }
 
-$fichier_source = "image.jpg";
+
+//-----------------choix image---------------------------
+$fichier_source = "./assets/img/image1.jpg";
+if($_POST['un']=="true"){
+	$fichier_source = "./assets/img/image1.jpg";
+}else if($_POST['deux']=="true"){
+	$fichier_source = "./assets/img/image2.jpg";
+}else if($_POST['trois']=="true"){
+	$fichier_source = "./assets/img/image3.jpg";
+}else if($_POST['quatre']=="true"){
+	$fichier_source = "./assets/img/image4.jpg";
+}else if($_POST['cinq']=="true"){
+	$fichier_source = "./assets/img/image5.jpg";
+}else if($_POST['six']=="true"){
+	$fichier_source = "./assets/img/image6.jpg";
+}
+
+
 $im = imageCreateFromJpeg($fichier_source);
-$rgb = hex2rgb($_GET['couleur']);
+$rgb = hex2rgb($_POST['couleur']);
 $color = imagecolorallocate($im, $rgb[0], $rgb[1], $rgb[2]);
-// $color = imagecolorallocate($im, 0, 0, 255); // blue text
-$font = 'Roboto-Regular.ttf';
-if($_GET['police']=="roboto"){
-    $font = 'Roboto.ttf';
+$font = './assets/fonts/impact.ttf';
+if($_POST['roboto']=="true"){
+    $font = './assets/fonts/roboto.ttf';
+}else if($_POST['dancing']=="true"){
+    $font = './assets/fonts/dancing.ttf';
+}else if($_POST['silkscreen']=="true"){
+    $font = './assets/fonts/silkscreen.ttf';
 }
-if($_GET['police']=="dancing"){
-    $font = 'Dancing.ttf';
-}
-if($_GET['police']=="silkscreen"){
-    $font = 'Silkscreen.ttf';
-}
-$text = $_GET['texte'];
-$size = $_GET['taille'] . '0';
+
+$text = $_POST['texte'];
+$size = $_POST['taille'] . '0';
 $angle = '0';
-$x = $_GET['x'];
-$y = $_GET['y'];
+if($_POST['x']==""){$x=0;}else{
+$x = $_POST['x'];
+}
+if($_POST['y']==""){$y=0;}else{
+$y = $_POST['y'];
+}
 
 imagettftext($im, $size, $angle, $x, $y, $color, $font, $text);
 // Output the image
 header("Content-type: image/png"); //format png
-if(((isset($_GET['statut']))&&($_GET['statut']=="0"))||(!isset($_GET['statut']))){
-imagepng($im);
+
+// -----------------si premier CAPTCHA ou pas-------------------
+if(isset($_POST['captcha_reponse'])){
+resultat($a="", $chemin, $liste_questions, $im);
 }else{
-$file = "" . genererChaineAleatoire() . ".png";
-imagepng($im, $file);  
-imagepng($im); 
+	resultat($a="2", $chemin, $liste_questions, $im);
 }
-imagedestroy($im);
+
 ?>

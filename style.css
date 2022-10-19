@@ -1,0 +1,85 @@
+@font-face {
+font-family: 'Impact';
+src: url('./assets/fonts/impact.ttf') format('truetype');
+font-weight: normal;
+font-style: normal;
+}
+
+@font-face {
+font-family: 'Roboto';
+src: url('./assets/fonts/roboto.ttf') format('truetype');
+font-weight: normal;
+font-style: normal;
+}
+
+@font-face {
+font-family: 'Dancing';
+src: url('./assets/fonts/dancing.ttf') format('truetype');
+font-weight: normal;
+font-style: normal;
+}
+
+@font-face {
+font-family: 'Silkscreen';
+src: url('./assets/fonts/silkscreen.ttf') format('truetype');
+font-weight: normal;
+font-style: normal;
+}
+
+.container{
+    width: 100vw;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content:space-around;
+}
+
+.impact{
+    font-size: 24px;
+    font-family: 'Impact';
+}
+
+.roboto{
+    font-size: 24px;
+    font-family: 'Roboto';
+}
+
+.dancing{
+    font-size: 24px;
+    font-family: 'Dancing';
+}
+
+.silkscreen{
+    font-size: 18px;
+    font-family: 'Silkscreen';
+}
+
+#lien{
+    color: red;
+    /* font-size: large; */
+}
+
+#question{
+    color: black;
+}
+
+.liste_image{
+    margin-top: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content:flex-start;
+    border-top: 10px solid black;
+}
+
+.affiche{
+    margin: 10px;
+}
+
+.affiche img{
+    width: 200px;
+}
+
+.text{
+    font-size: 11px;
+}
